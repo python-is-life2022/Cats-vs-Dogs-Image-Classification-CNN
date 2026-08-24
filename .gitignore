@@ -214,5 +214,15 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Streamlit
-.streamlit/secrets.toml
+# Streamli
+@"
+cats_vs_dogs_main_file/
+cats_vs_dogs_main_file/**
+*.jpg
+*.jpeg
+*.png
+*.csv
+.ipynb_checkpoints/
+__pycache__/
+venv/
+"@ | Set-Content -Path .gitignore -Encoding utf8
