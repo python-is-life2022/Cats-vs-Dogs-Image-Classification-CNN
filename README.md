@@ -236,7 +236,7 @@ Dense output layer with sigmoid activation
 - [x] Normalize pixel values to the `[0.0, 1.0]` range
 - [ ] Build the baseline CNN model
 - [ ] Add Plot accuracy and loss curves
-- [ Train the model with binary cross-entropy
+- [ ] Train the model with binary cross-entropy
 - [ ] Plot accuracy and loss curves
 - [ ] Evaluate the model with a confusion matrix
 - [ ] Calculate precision, recall, and ROC-AUC
