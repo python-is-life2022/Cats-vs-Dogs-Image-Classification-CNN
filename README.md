@@ -262,4 +262,8 @@ Dense output layer with sigmoid activation
 
 ## License
 
+<<<<<<< HEAD
 This project is available under the MIT License. Add a `LICENSE` file to the repository if you want to distribute the project under that license.
+=======
+This project is available under the MIT License. Add a `LICENSE` file to the repository if you want to distribute the project under that license.
+>>>>>>> 8c5e38039cb0bde7b52383ea05bfe45b7c5ee67b
