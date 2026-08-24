@@ -64,6 +64,7 @@ Clone the repository:
 ```bash
 git clone https://github.com/your-username/cats-vs-dogs-cnn.git
 cd cats-vs-dogs-cnn
+
 ```
 
 Install the dependencies:
@@ -262,10 +263,5 @@ Dense output layer with sigmoid activation
 ## License
 
 This project is available under the MIT License. Add a `LICENSE` file to the repository if you want to distribute the project under that license.
-
-Original user request:
-# README
-
-این فایل برای دانلود آماده شده است.
 
 همین 😐😐😐😐😐😐
