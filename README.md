@@ -15,7 +15,7 @@ If the preview image is unavailable, add `cat_and_dog_images_test.png` to the pr
 - [x] Inspect metadata and dataset structure
 - [x] Visualize raw samples with Matplotlib
 - [x] Build a `tf.data` preprocessing pipeline
-- [ ] Define a CNN architecture
+- [x] Define a CNN architecture
 - [ ] Train the model
 - [ ] Evaluate model performance
 - [ ] Tune hyperparameters and improve accuracy
@@ -111,6 +111,77 @@ layers.RandomZoom(0.1),
 layers.RandomContrast(0.1),
 ], name="data_augmentation")
 ```
+
+## Model Architecture
+
+The classification model is built using a deep Convolutional Neural Network (CNN) following modern architectural best practices (VGG-style blocks combined with Batch Normalization, Dropout regularization, and Global Average Pooling).
+```python
+model = Sequential([
+data_augmentation,
+
+# Block 1 (64 filters)
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.1),
+
+# Block 2 (128 filters)
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.15),
+
+# Block 3 (256 filters)
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.15),
+
+# Classification Head
+GlobalAveragePooling2D(),
+Dense(256, activation='relu'),
+Dropout(0.2),
+Dense(1, activation='sigmoid')
+])
+```
+Architectural Highlights
+* **VGG-Style Convolutional Blocks: Successive** 
+3
+×
+3
+3×3
+ convolutions with increasing filter depth (
+64
+→
+128
+→
+256
+64→128→256
+) allow the network to extract both low-level patterns (edges, textures) and complex semantic features (ears, whiskers, snouts).
+* **Batch Normalization**: Applied after every convolutional layer to stabilize and accelerate convergence while mitigating internal covariate shift.
+* **Progressive Regularization**: Increasing Dropout rates (
+0.10
+→
+0.15
+→
+0.20
+0.10→0.15→0.20
+) prevent co-adaptation of features across deeper layers.
+* **Global Average Pooling (GAP)**: Replaces traditional heavy Flatten layers to drastically reduce trainable parameters, minimize overfitting, and make the model robust to spatial translations.
+Binary Output Head: A single unit with a sigmoid activation function suited for binary cross-entropy optimization (0: Cat, 1: Dog).
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
