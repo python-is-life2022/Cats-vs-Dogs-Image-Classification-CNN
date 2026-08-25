@@ -96,7 +96,21 @@ plt.tight_layout()
 plt.savefig('cat_and_dog_images_test')
 plt.show()
 ```
+## Data Augmentation Strategy
 
+To improve model generalization and reduce overfitting, I have implemented an integrated **Data Augmentation** strategy. Instead of using legacy external generators, these transformations are built directly into the Keras model as layers.
+
+### Implementation
+
+The augmentation pipeline is defined as a `Sequential` layer that processes training data before it enters the convolutional blocks:
+```python
+data_augmentation = keras.Sequential([
+layers.RandomFlip("horizontal"),
+layers.RandomRotation(0.1),
+layers.RandomZoom(0.1),
+layers.RandomContrast(0.1),
+], name="data_augmentation")
+```
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
