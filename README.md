@@ -198,6 +198,21 @@ metrics=['accuracy']
 - **Optimizer (`Adam`):** Combines AdaGrad and RMSProp advantages, utilizing adaptive learning rates with momentum for stable gradient updates across deep convolutional layers.
 - **Metric (`accuracy`):** Tracks the ratio of correctly classified cat and dog samples per batch and epoch.
 
+## Model Training
+
+The CNN is trained across 60 epochs using an end-to-end pipeline with real-time validation tracking:
+```python
+his = model.fit(
+train_data,
+epochs=60,
+validation_data=validation_data
+)
+```
+### Training Configuration:
+* **Epochs:** `60`
+* **Batch Size:** `32` (configured in data pipeline)
+* **Optimization Target:** Minimizing `binary_crossentropy` while maximizing validation accuracy.
+* **History Tracker:** The training dynamics (loss & accuracy curves across epochs) are stored in the `his` history object for downstream evaluation and diagnostic plotting.
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
