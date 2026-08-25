@@ -67,6 +67,17 @@ def preprocess(image, label):
     image = tf.cast(image, tf.float32) / 255.0
     return image, label
 
+train_data = (
+    train_normal
+    .shuffle(1000)
+    .batch(32)
+    .prefetch(tf.data.AUTOTUNE))
+
+validation_data = (
+    validation_normal
+    .batch(32)
+    .prefetch(tf.data.AUTOTUNE))
+
 ```
 
 ### Visualize samples
