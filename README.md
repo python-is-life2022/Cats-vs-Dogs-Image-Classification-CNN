@@ -236,6 +236,27 @@ It provides useful information about each layer, including output shapes and the
 ```python
 model.summary()
 ```
+## Learning Curves:
+The code below visualizes the training process by plotting:
+
+* Training Accuracy
+* Validation Accuracy
+* Training Loss
+* Validation Loss
+These curves help evaluate model convergence and identify potential issues such as overfitting or underfitting.
+
+## Training and Validation Curves
+
+The following plot shows the model's training and validation accuracy and loss across all epochs.
+
+<p align="center">
+  <img 
+    src="charts/loss_and_accuracy_curves.png" 
+    alt="Training and Validation Accuracy and Loss Curves" 
+    width="850"
+  >
+</p>
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
