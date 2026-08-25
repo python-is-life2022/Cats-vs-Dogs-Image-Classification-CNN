@@ -16,7 +16,7 @@ If the preview image is unavailable, add `cat_and_dog_images_test.png` to the pr
 - [x] Visualize raw samples with Matplotlib
 - [x] Build a `tf.data` preprocessing pipeline
 - [x] Define a CNN architecture
-- [ ] Train the model
+- [x] Train the model
 - [ ] Evaluate model performance
 - [ ] Tune hyperparameters and improve accuracy
 
