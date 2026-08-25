@@ -225,9 +225,17 @@ val_loss, val_acc = model.evaluate(validation_data)
 
 | Split | Samples | Loss | Accuracy | Performance Note |
 | :--- | :---: | :---: | :---: | :--- |
-| 🏋️ **Training Set** | 18,610 (80%) | `0.11` | **95.85%** | High convergence & feature capture |
+| 🏋️ **Training Set** | 18,610 (80%) | `0.11` | **96.15%%** | High convergence & feature capture |
 | 🧪 **Validation Set** | 4,652 (20%) | `0.26` | **90.37%** | Strong generalization with low error gap |
 
+
+## Model Summary and Training Curves
+
+After building the model, `model.summary()` is used to display the model architecture.  
+It provides useful information about each layer, including output shapes and the number of trainable parameters.
+```python
+model.summary()
+```
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
