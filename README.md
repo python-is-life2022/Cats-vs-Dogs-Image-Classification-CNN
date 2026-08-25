@@ -213,6 +213,21 @@ validation_data=validation_data
 * **Batch Size:** `32` (configured in data pipeline)
 * **Optimization Target:** Minimizing `binary_crossentropy` while maximizing validation accuracy.
 * **History Tracker:** The training dynamics (loss & accuracy curves across epochs) are stored in the `his` history object for downstream evaluation and diagnostic plotting.
+
+## 📊 Model Evaluation & Results
+
+The model was evaluated on both training and validation splits in inference mode (`Dropout` and real-time `Augmentation` layers disabled):
+```python
+train_loss, train_acc = model.evaluate(train_data)
+val_loss, val_acc = model.evaluate(validation_data)
+```
+### 📊 Performance Summary
+
+| Split | Samples | Loss | Accuracy | Performance Note |
+| :--- | :---: | :---: | :---: | :--- |
+| 🏋️ **Training Set** | 18,610 (80%) | `0.11` | **95.85%** | High convergence & feature capture |
+| 🧪 **Validation Set** | 4,652 (20%) | `0.26` | **90.37%** | Strong generalization with low error gap |
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
