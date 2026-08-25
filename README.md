@@ -1,269 +1,122 @@
-# Cats vs Dogs Image Classification with CNN
+# Cats vs Dogs Image Classification with TensorFlow
 
-An end-to-end deep learning project for binary image classification using a Convolutional Neural Network (CNN). The model is designed to classify images as either a cat or a dog using TensorFlow and Keras.
+A TensorFlow notebook project that prepares the `cats_vs_dogs` dataset for binary image classification. The current notebook focuses on dataset loading, inspection, visualization, and preprocessing. CNN model building, training, and evaluation are the next steps and are not yet implemented.
 
-## Project Overview
+## Preview
 
-This project covers the initial stages of a Cats vs Dogs image-classification pipeline:
+![Cats and dogs sample grid](cat_and_dog_images_test.png)
 
-- Inspecting image dimensions and sample images
-- Organizing the raw dataset into class-specific directories
-- Separating cat and dog images
-- Converting image pixel values from the `[0, 255]` range to `[0.0, 1.0]`
-- Preparing the dataset for CNN training
+If the preview image is unavailable, add `cat_and_dog_images_test.png` to the project root and refresh the README preview.
 
-Image normalization is performed using the following formula:
+## Project Status
 
-```text
-normalized_pixel = pixel / 255.0
-```
+- [x] Load `cats_vs_dogs` from TensorFlow Datasets
+- [x] Split the data into 80% training and 20% validation
+- [x] Inspect metadata and dataset structure
+- [x] Visualize raw samples with Matplotlib
+- [x] Build a `tf.data` preprocessing pipeline
+- [ ] Define a CNN architecture
+- [ ] Train the model
+- [ ] Evaluate model performance
+- [ ] Tune hyperparameters and improve accuracy
 
-This keeps input values in a smaller and consistent range, which generally helps neural-network training become more stable.
+## Dataset
 
-## Dataset Structure
+This notebook uses **TensorFlow Datasets** `cats_vs_dogs/4.0.1`.
 
-After organizing the files, the expected directory structure is:
+- Labels: `0 = Cat`, `1 = Dog`
+- Usable images: `23,262`
+- Corrupted images excluded during dataset preparation: `1,738`
+- Split used in the notebook: `80%` training, `20%` validation
 
-```text
-cats-vs-dogs-cnn/
-├── cats_vs_dogs_main_file/
-│   └── train/
-│       ├── cat_train_images/
-│       │   ├── cat.0.jpg
-│      n│       │   ├── cat.0.jpg
-│       │  
-│       └── dog_train_images/
-│           ├── dog.0.jpg
-│           ├── dog.1.jpg
-│           └── ...
-├── notebooks/
-├── requirements.txt
-└── README.md
-```
+## Requirements
 
-The
-```
-
-The,500 cat images and 12,500 dog images.
-
-## Technologies
-
-- Python 3.9+
-- TensorFlow
-- Keras
-- OpenCV
-- NumPy
-- Matplotlib
-- Pandas
-- Jupyter Notebook or Google Colab
-
-## Installation
-
-Clone the repository:
+Install the core dependencies:
 
 ```bash
-git clone https://github.com/your-username/cats-vs-dogs-cnn.git
-cd cats-vs-dogs-cnn
-
+pip install tensorflow tensorflow-datasets matplotlib
 ```
 
-Install the dependencies:
+The notebook itself relies on TensorFlow, TensorFlow Datasets, and Matplotlib. If you run into environment issues, see the troubleshooting section for `protobuf` and `importlib-resources`.
 
-```bash
-pip install -r requirements.txt
-```
+## Quick Start
 
-Example `requirements.txt`:
-
-```text
-tensorflow>=2.10.0
-keras
-opencv-python
-numpy
-matplotlib
-pandas
-```
-
-## Data Organization
-
-The raw images are moved into separate directories according to their labels:
+### Load the dataset
 
 ```python
-import os
-import shutil
+import tensorflow_datasets as tfds
 
-train_dir = os.path.join("cats_vs_dogs_main_file", "train")
-
-for label in ["cat", "dog"]:
-    target_dir = os.path.join(train_dir, f"{label}_train_images")
-    os.makedirs(target_dir, exist_ok=True)
-
-    for index in range(12500):
-        source = os.path.join(train_dir, f"{label}.{index}.jpg")
-        destination = os.path.join(target_dir, f"{label}.{index}.jpg")
-
-        if os.path.exists(source):
-            shutil.move(source, destination)
-```
-
-`exist_ok=True` prevents an error if the target directory already exists. The `os.path.exists` check prevents the script from failing when a file is missing or has already been moved.
-
-## Image Inspection
-
-A sample image can be loaded and displayed with Matplotlib:
-
-```python
-import os
-import matplotlib.pyplot as plt
-
-image_path = os.path.join(
-    "cats_vs_dogs_main_file",
-    "train",
-    "cat_train_images",
-    "cat.1.jpg",
+(train_ds, val_ds), ds_info = tfds.load(
+    "cats_vs_dogs",
+    split=["train[:80%]", "train[80%:]"],
+    with_info=True,
+    as_supervised=True,
 )
 
-image = plt.imread(image_path)
+print(ds_info)
+```
 
-plt.axis("off")
-plt.imshow(image)
+### Preprocess and build the pipeline
+
+```python
+import tensorflow as tf
+
+
+def preprocess(image, label):
+    image = tf.image.resize(image, (32, 32))
+    image = tf.cast(image, tf.float32) / 255.0
+    return image, label
+
+```
+
+### Visualize samples
+
+```python
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 10))
+for i, (image, label) in enumerate(train_ds.take(12)):
+    plt.subplot(3, 4, i + 1)
+    plt.imshow(image)
+    plt.title('Dogs' if label.numpy() == 1 else 'Cats')
+    plt.axis('off');
+
+plt.tight_layout()
+plt.savefig('cat_and_dog_images_test')
 plt.show()
-
-print("Image shape:", image.shape)
 ```
 
-## Image Normalization
+## Notebook Contents
 
-Pixel normalization can be applied as follows:
+- `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
+- `DEPENDENCIES.md` - dependency notes for the project
+- `README.md` - project overview and usage guide
 
-```python
-import os
-import matplotlib.pyplot as plt
+## Next Steps
 
-train_dir = os.path.join("cats_vs_dogs_main_file", "train")
+- Build a convolutional neural network for binary classification
+- Train the model on the prepared dataset
+- Evaluate accuracy, loss, and generalization
+- Inspect misclassifications and iterate on preprocessing or architecture
 
-for folder in ["cat_train_images", "dog_train_images"]:
-    folder_path = os.path.join(train_dir, folder)
+## Troubleshooting
 
-    for filename in os.listdir(folder_path):
-        image_path = os.path.join(folder_path, filename)
-        image = plt.imread(image_path).astype("float32")
-        normalized_image = image / 255.0
+If you see import or version errors, update the relevant packages first:
+
+```bash
+pip install --upgrade protobuf importlib-resources
 ```
 
-The variable `normalized_image` contains floating-point pixel values in the `[0.0, 1.0]` range.
+If the TensorFlow Datasets cache becomes inconsistent, clear it and reload the dataset.
 
-This loop demonstrates the normalization process, but it does not save the normalized images. For model training, it is usually more efficient to normalize images while loading them instead of creating duplicate image files in memory or on disk.
+**Unix/Linux:**
 
-## Recommended Training Pipeline
-
-For a scalable training workflow, use `ImageDataGenerator` or a `tf.data` pipeline:
-
-```python
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-image_size = (180, 180)
-batch_size = 32
-
-train_datagen = ImageDataGenerator(
-    rescale=1.0 / 255.0,
-    validation_split=0.2,
-    horizontal_flip=True,
-    rotation_range=15,
-    zoom_range=0.1,
-)
-
-train_generator = train_datagen.flow_from_directory(
-    "cats_vs_dogs_main_file/train",
-    target_size=image_size,
-    batch_size=batch_size,
-    class_mode="binary",
-    subset="training",
-)
-
-validation_generator = train_datagen.flow_from_directory(
-    "cats_vs_dogs_main_file/train",
-    target_size=image_size,
-    batch_size=batch_size,
-    class_mode="binary",
-    subset="validation",
-)
+```bash
+rm -rf ~/.keras/datasets/* ~/.tensorflow_datasets/*
 ```
 
-With `rescale=1.0 / 255.0`, normalization is applied automatically when each image is loaded.
-
-## Planned CNN Architecture
-
-The project imports the main building blocks needed for a CNN model:
-
-- `Conv2D` for extracting visual features
-- `BatchNormalization` for more stable training
-- `Activation` for nonlinear transformations
-- `MaxPooling2D` for reducing spatial dimensions
-- `GlobalAveragePooling2D` for reducing feature maps
-- `Dropout` for reducing overfitting
-- ` loss function for classification
-- `Adam` as the optimizer
-- Binary cross-entropy as the loss function
-
-A future baseline model can be built with the following structure:
-
-```text
-Input image
-    ↓
-
-Input image
-    ↓
-
-    ↓
-Max Pooling
-    ↓
-Convolution + Batch Normalization + Activation
-    ↓
-Max Pooling
-    ↓
-Global Average Pooling
-    ↓
-Dropout
-    ↓
-Dense output layer with sigmoid activation
-```
-
-## Roadmap
-
-- [x] Inspect sample images and image dimensions
-- [x] Separate cat and dog images into directories
-- [x] Normalize pixel values to the `[0.0, 1.0]` range
-- [ ] Build the baseline CNN model
-- [ ] Add Plot accuracy and loss curves
-- [ ] Train the model with binary cross-entropy
-- [ ] Plot accuracy and loss curves
-- [ ] Evaluate the model with a confusion matrix
-- [ ] Calculate precision, recall, and ROC-AUC
-- [ ] Save the trained model
-- [ ] Add an inference script for new images
-- [ ] Add data augmentation and model tuning
-
-## Important Notes
-
-1. Run the file organization script only once, or make it idempotent as shown above.
-2. The folder passed to `flow_from_directory` must contain one subdirectory per class.
-3. The manual normalization loop creates a subdirectory per class.
-3. The manual normalization loop creates a, normalize during loading with `rescale=1.0 / 255.0` or a Keras `Rescaling` layer.
-5. Keep training, validation, and test data separated to avoid data leakage.
-
-## Author
-
-**Amir Mostafa Kharazi**
-
-- Portfolio: [simurghprojects.com](https://simurghprojects.com)
-- GitHub: [your-github-username](https://github.com/your-username)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/your-profile)
+After changing dependencies or clearing caches, restart the Python kernel or notebook runtime.
 
 ## License
 
-<<<<<<< HEAD
-This project is available under the MIT License. Add a `LICENSE` file to the repository if you want to distribute the project under that license.
-=======
-This project is available under the MIT License. Add a `LICENSE` file to the repository if you want to distribute the project under that license.
->>>>>>> 8c5e38039cb0bde7b52383ea05bfe45b7c5ee67b
+License placeholder: add your preferred license here.
