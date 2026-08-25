@@ -179,6 +179,17 @@ Architectural Highlights
 * **Global Average Pooling (GAP)**: Replaces traditional heavy Flatten layers to drastically reduce trainable parameters, minimize overfitting, and make the model robust to spatial translations.
 Binary Output Head: A single unit with a sigmoid activation function suited for binary cross-entropy optimization (0: Cat, 1: Dog).
 
+## Model Compilation
+
+The network is compiled for binary classification using the **Adam** optimizer, **Binary Crossentropy** loss function, and tracking **Accuracy** metric:
+```python
+model.compile(
+optimizer='adam',
+loss='binary_crossentropy',
+metrics=['accuracy']
+)
+```
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
