@@ -189,6 +189,14 @@ loss='binary_crossentropy',
 metrics=['accuracy']
 )
 ```
+### Configuration Details
+
+- **Loss Function (`binary_crossentropy`):** Paired with the single sigmoid output neuron, this computes the cross-entropy metric between the true binary labels and predicted probabilities:
+
+  $$\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \Big[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \Big]$$
+
+- **Optimizer (`Adam`):** Combines AdaGrad and RMSProp advantages, utilizing adaptive learning rates with momentum for stable gradient updates across deep convolutional layers.
+- **Metric (`accuracy`):** Tracks the ratio of correctly classified cat and dog samples per batch and epoch.
 
 ## Notebook Contents
 
