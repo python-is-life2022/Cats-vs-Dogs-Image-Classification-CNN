@@ -158,9 +158,6 @@ Dense(1, activation='sigmoid')
 ```
 Architectural Highlights
 * **VGG-Style Convolutional Blocks: Successive** 
-3
-×
-3
 3×3
  convolutions with increasing filter depth (
 64
