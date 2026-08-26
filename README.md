@@ -538,6 +538,14 @@ Input (64x64x3)
 
 ---
 
+<p align="center">
+  <img 
+    src="charts/loss_and_accuracy_curves4.png" 
+    alt="Training and Validation Accuracy and Loss Curves" 
+    width="850"
+  >
+</p>
+
 ## 🔬 Evolution & Iterations Matrix
 
 | Experiment | Input Size | Architecture Highlights | Optimizer | Epochs | Val Loss | Val Acc |
