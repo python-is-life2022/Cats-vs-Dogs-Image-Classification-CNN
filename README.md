@@ -382,6 +382,103 @@ By refining the architecture and using RMSprop over 30 epochs, the model shows s
 64×64
 ) combined with multi-layer dense regularization yielded a model that generalizes significantly better on unseen test samples without overfitting.`
 
+
+## 🔬 Experiment 3: Deeper 4-Block CNN Architecture & Fine-Tuned Optimization
+
+In this experiment, the network capacity was scaled up by adding a 4th convolutional block (512 feature maps) and fine-tuning the optimizer's learning rate to capture higher-level abstract representations.
+
+### Key Architectural Changes & Rationale
+1. **Deeper Feature Extraction (4 Blocks):** Added an extra convolutional stage with `512` filters to extract fine-grained semantic features.
+2. **Lower Learning Rate ($\text{lr} = 10^{-4}$):** Reduced the RMSprop learning rate from `0.001` to `0.0001` to ensure stable, smooth convergence and prevent gradient instability in deeper layers.
+3. **Scaled Classification Head:** Configured `Dense(512)` with `Dropout(0.2)` right after Global Average Pooling to handle the high-dimensional feature bottleneck.
+
+---
+
+### Model Architecture
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPooling2D, Dropout, GlobalAveragePooling2D, Dense
+import tensorflow.keras.optimizers as opt
+
+model = Sequential([
+data_augmentation,
+
+# Block 1 (64 Filters)
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.1),
+
+# Block 2 (128 Filters)
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.15),
+
+# Block 3 (256 Filters)
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.2),
+
+# Block 4 (512 Filters - New Addition)
+Conv2D(512, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(512, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.25),
+
+# Classification Head
+GlobalAveragePooling2D(),
+Dense(512, activation='relu'),
+Dropout(0.2),
+Dense(1, activation='sigmoid')
+])
+
+model.compile(
+loss=tf.keras.losses.binary_crossentropy,
+optimizer=opt.RMSprop(learning_rate=0.0001),
+metrics=['acc']
+)
+
+his = model.fit(
+train_data,
+epochs=40,
+validation_data=validation_data
+)
+```
+### 📊 Experiment 3 Benchmark Results
+
+| Split | Samples | Loss | Accuracy | Performance Insights |
+| :--- | :---: | :---: | :---: | :--- |
+| 🏋️ **Training Set** | 18,610 (80%) | `0.17` | **92.98%** | Enhanced model capacity leads to higher feature fitting |
+| 🧪 **Validation Set** | 4,652 (20%) | `0.25` | **91.25%** | **Peak validation accuracy**, maintaining robust classification |
+
+### 📈 Experiments Comparison Matrix
+
+| Experiment | Input Size | Convolutions | Head Architecture | Optimizer (LR) | Val Accuracy | Val Loss |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Baseline (v1)** | $32\times32$ | 3 Blocks (64-256) | GAP + Dense(256) | Adam (0.001) | 90.37% | 0.26 |
+| **Refinement (v2)** | $64\times64$ | 3 Blocks (64-256) | GAP + Dense(256) + Dense(128) | RMSprop (0.001) | 91.17% | **0.22** |
+| **Experiment 3 (v3)** | $64\times64$ | **4 Blocks (64-512)** | GAP + **Dense(512)** | **RMSprop (0.0001)** | **91.25%** | 0.25 |
+
+
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
