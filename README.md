@@ -18,7 +18,7 @@ If the preview image is unavailable, add `cat_and_dog_images_test.png` to the pr
 - [x] Define a CNN architecture
 - [x] Train the model
 - [x] Evaluate model performance
-- [ ] Tune hyperparameters and improve accuracy
+- [x] Tune hyperparameters and improve accuracy
 
 ## Dataset
 
@@ -257,12 +257,137 @@ The following plot shows the model's training and validation accuracy and loss a
   >
 </p>
 
+## 🚀 Model Optimization & Refinement (Version 2)
+
+To capture richer visual patterns and achieve a tighter generalization gap, several architectural and pipeline enhancements were introduced:
+
+### 1. Updated Pipeline & Higher Resolution
+- **Resolution Increase:** Increased input image resolution from $32\times32$ to $64\times64$, preserving finer structural details (edges, whiskers, and fur textures).
+- **Shuffle Buffer Tuning:** Expanded training shuffle buffer size to `1,500` for better data stochasticity.
+```python
+def preprocessing_image(image, label):
+image = tf.image.resize(image, (64, 64))
+image = tf.cast(image, tf.float32) / 255.0
+return image, label
+
+train_data = (
+train_normal
+.shuffle(1500)
+.batch(32)
+.prefetch(tf.data.AUTOTUNE)
+)
+
+validation_data = (
+validation_normal
+.batch(32)
+.prefetch(tf.data.AUTOTUNE)
+)
+```
+2. Enhanced Model Architecture
+The network head was upgraded to a two-tier dense structure (Dense(256) followed by Dense(128)) with progressive dropout regularization up to 0.30 to prevent over-reliance on specific feature maps:
+
+```
+model = Sequential([
+data_augmentation,
+
+# Block 1 (64 Filters)
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.1),
+
+# Block 2 (128 Filters)
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.15),
+
+# Block 3 (256 Filters)
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.2),
+
+# Classification Head (Global Average Pooling + Multi-Dense)
+GlobalAveragePooling2D(),
+Dense(256, activation='relu'),
+Dropout(0.2),
+Dense(128, activation='relu'),
+Dropout(0.3),
+Dense(1, activation='sigmoid')
+])
+
+```
+3. Training & Optimization Settings
+* Optimizer: RMSprop (
+learning_rate
+=
+0.001
+learning_rate=0.001
+) for adaptive gradient step-sizing.
+* Loss: binary_crossentropy
+* Epochs: 30
+
+```
+model.compile(
+loss=tf.keras.losses.binary_crossentropy,
+optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.001),
+metrics=['acc']
+)
+his = model.fit(
+train_data,
+epochs=30,
+validation_data=validation_data
+)
+```
+
+4. 📊 Evaluation & Comparative Results
+By refining the architecture and using RMSprop over 30 epochs, the model shows significantly reduced variance and overfitting, closing the train-val gap to just 
+∼
+1.5
+%
+∼1.5%
+:
+### 📊 Performance Summary
+
+| Split | Samples | Loss | Accuracy | Performance Note |
+| :--- | :---: | :---: | :---: | :--- |
+| 🏋️ **Training Set** | 18,610 (80%) | `0.18` | **92.74%** | High convergence & feature capture |
+| 🧪 **Validation Set** | 4,652 (20%) | `0.22` | **91.17%** | Strong generalization with low error gap |
+
+<p align="center">
+  <img 
+    src="charts/loss_and_accuracy_curves2.png" 
+    alt="Training and Validation Accuracy and Loss Curves" 
+    width="850"
+  >
+</p>
+
+**Key Takeaway: ** The higher resolution (
+64
+×
+64
+64×64
+) combined with multi-layer dense regularization yielded a model that generalizes significantly better on unseen test samples without overfitting.
+
 ## Notebook Contents
 
 - `cats_vs_dogs_image_classification_cnn.ipynb` - notebook for loading, inspecting, visualizing, and preprocessing the dataset
 - `DEPENDENCIES.md` - dependency notes for the project
 - `README.md` - project overview and usage guide
-
+  
 ## Next Steps
 
 - Build a convolutional neural network for binary classification
