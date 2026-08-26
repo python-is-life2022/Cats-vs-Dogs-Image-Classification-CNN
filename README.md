@@ -469,6 +469,14 @@ validation_data=validation_data
 | 🏋️ **Training Set** | 18,610 (80%) | `0.17` | **92.98%** | Enhanced model capacity leads to higher feature fitting |
 | 🧪 **Validation Set** | 4,652 (20%) | `0.25` | **91.25%** | **Peak validation accuracy**, maintaining robust classification |
 
+<p align="center">
+  <img 
+    src="charts/loss_and_accuracy_curves3.png" 
+    alt="Training and Validation Accuracy and Loss Curves" 
+    width="850"
+  >
+</p>
+
 ### 📈 Experiments Comparison Matrix
 
 | Experiment | Input Size | Convolutions | Head Architecture | Optimizer (LR) | Val Accuracy | Val Loss |
