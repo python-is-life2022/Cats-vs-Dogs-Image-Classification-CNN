@@ -375,12 +375,12 @@ By refining the architecture and using RMSprop over 30 epochs, the model shows s
   >
 </p>
 
-**Key Takeaway: ** The higher resolution (
+`Key Takeaway: The higher resolution (
 64
 ×
 64
 64×64
-) combined with multi-layer dense regularization yielded a model that generalizes significantly better on unseen test samples without overfitting.
+) combined with multi-layer dense regularization yielded a model that generalizes significantly better on unseen test samples without overfitting.`
 
 ## Notebook Contents
 
