@@ -476,16 +476,155 @@ validation_data=validation_data
     width="850"
   >
 </p>
+# 🐾 Cats vs Dogs Classification using Deep CNN
 
-### 📈 Experiments Comparison Matrix
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)](https://keras.io/)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Validation Accuracy](https://img.shields.io/badge/Val%20Accuracy-92.02%25-brightgreen?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-| Experiment | Input Size | Convolutions | Head Architecture | Optimizer (LR) | Val Accuracy | Val Loss |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Baseline (v1)** | $32\times32$ | 3 Blocks (64-256) | GAP + Dense(256) | Adam (0.001) | 90.37% | 0.26 |
-| **Refinement (v2)** | $64\times64$ | 3 Blocks (64-256) | GAP + Dense(256) + Dense(128) | RMSprop (0.001) | 91.17% | **0.22** |
-| **Experiment 3 (v3)** | $64\times64$ | **4 Blocks (64-512)** | GAP + **Dense(512)** | **RMSprop (0.0001)** | **91.25%** | 0.25 |
+An end-to-end Computer Vision project implementing a deep custom Convolutional Neural Network (CNN) from scratch using **TensorFlow/Keras** to classify images of cats and dogs. Through iterative architecture refinement, progressive regularization, and data pipeline optimization, the final model achieves **92.02% validation accuracy** and a low validation loss of **0.22**.
+
+---
+
+## 📌 Key Highlights
+
+- **Custom Deep Architecture:** 8 Convolutional layers organized in 4 double-conv blocks (64 to 512 filters) + Global Average Pooling.
+- **Robust Regularization:** Progressive Spatial Dropout (0.1 → 0.25) combined with `BatchNormalization` after every Conv layer to stabilize activations and prevent overfitting.
+- **Optimized Data Pipeline:** Fully asynchronous `tf.data` pipeline with prefetching and on-the-fly Data Augmentation layers integrated directly into the computational graph.
+- **Peak Performance:** Reached **94.11% Training Accuracy** and **92.02% Validation Accuracy** across 40 epochs using `Adam` optimizer.
+
+---
+
+## 🏆 Final Benchmark & Results (Experiment 4)
+
+| Split | Samples | Loss | Accuracy | Generalization Status |
+| :--- | :---: | :---: | :---: | :--- |
+| 🏋️ **Training Set** | 18,610 (80%) | `0.14` | **94.11%** | Strong convergence without severe overfitting |
+| 🧪 **Validation Set** | 4,652 (20%) | `0.22` | **92.02%** | **Best-in-Class generalization for scratch CNN** |
+
+> **Note:** The tight gap (~2.09%) between training and validation accuracy confirms the effectiveness of the progressive dropout and batch normalization scheme.
+
+---
+
+## 🏗️ Model Architecture
+
+The model uses a modular VGG-like design with modern improvements (Batch Normalization and Global Average Pooling instead of heavy Dense layers):
+Input (64x64x3)
+
+│
+
+├── [Data Augmentation] (Random Flip, Rotation, Zoom)
+
+│
+
+├── [Block 1] Conv2D (64) → BN → ReLU → Conv2D (64) → BN → ReLU → MaxPool (2x2) → Dropout(0.10)
+
+├── [Block 2] Conv2D (128) → BN → ReLU → Conv2D (128) → BN → ReLU → MaxPool (2x2) → Dropout(0.15)
+
+├── [Block 3] Conv2D (256) → BN → ReLU → Conv2D (256) → BN → ReLU → MaxPool (2x2) → Dropout(0.20)
+
+├── [Block 4] Conv2D (512) → BN → ReLU → Conv2D (512) → BN → ReLU → MaxPool (2x2) → Dropout(0.25)
+
+│
+
+├── GlobalAveragePooling2D
+
+├── Dense (512, ReLU) → Dropout(0.20)
+
+└── Dense (1, Sigmoid) ──► Output (Cat: 0, Dog: 1)
 
 
+---
+
+## 🔬 Evolution & Iterations Matrix
+
+| Experiment | Input Size | Architecture Highlights | Optimizer | Epochs | Val Loss | Val Acc |
+| :--- | :---: | :--- | :---: | :---: | :---: | :---: |
+| **v1: Baseline** | 32x32 | 3 Conv Blocks (64-256) + GAP | Adam (1e-3) | 20 | 0.26 | 90.37% |
+| **v2: Refinement** | 64x64 | 3 Conv Blocks + Dense(256) + Dense(128) | RMSprop (1e-3) | 25 | 0.22 | 91.17% |
+| **v3: Deep Capacity** | 64x64 | 4 Conv Blocks (64-512) + GAP | RMSprop (1e-4) | 30 | 0.25 | 91.25% |
+| **v4: Final Optimized** 🏆 | **64x64** | **4 Conv Blocks (64-512) + Progressive Dropout** | **Adam (1e-3)** | **40** | **0.22** | **92.02%** |
+
+---
+
+## 💻 Final Model Implementation
+```python
+import tensorflow as tf
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import (
+Conv2D, BatchNormalization, Activation,
+MaxPooling2D, Dropout, GlobalAveragePooling2D, Dense
+)
+from tensorflow.keras.losses import binary_crossentropy
+import tensorflow.keras.optimizers as opt
+
+# Model Definition
+model = Sequential([
+data_augmentation,
+
+# Block 1
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(64, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.1),
+
+# Block 2
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(128, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.15),
+
+# Block 3
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(256, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.2),
+
+# Block 4
+Conv2D(512, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+Conv2D(512, (3, 3), padding='same'),
+BatchNormalization(),
+Activation('relu'),
+MaxPooling2D((2, 2)),
+Dropout(0.25),
+
+# Classification Head
+GlobalAveragePooling2D(),
+Dense(512, activation='relu'),
+Dropout(0.2),
+Dense(1, activation='sigmoid')
+])
+
+# Compilation
+model.compile(
+loss=binary_crossentropy,
+optimizer=opt.Adam(learning_rate=0.001),
+metrics=['acc']
+)
+
+# Training
+history = model.fit(
+train_data,
+epochs=40,
+validation_data=validation_data
+)
+```
 
 ## Notebook Contents
 
