@@ -35,7 +35,8 @@ If your test images are compressed in a ZIP file, extract them first:
 `If you are using Google Colab and the ZIP file is located in /content, use:
 !unzip -q /content/test_photos.zip -d /content/test
 `
-🛠️ Code Reference
+
+**🛠️ Code Reference**
 
 ```
 import tensorflow as tf
