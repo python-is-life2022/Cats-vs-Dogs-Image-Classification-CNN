@@ -36,7 +36,7 @@ If your test images are compressed in a ZIP file, extract them first:
 !unzip -q /content/test_photos.zip -d /content/test
 `
 
-**🛠️ Code Reference**
+## 🛠️ Code Reference
 
 ```
 import tensorflow as tf
@@ -73,7 +73,7 @@ plt.title(f"Prediction: {label} | Confidence: {confidence:.2%}")
 plt.show()
 
 ```
-🧠 Prediction Logic
+## 🧠 Prediction Logic
 The model produces a value between 0 and 1.
 
 * A prediction greater than 0.5 is classified as Dog.
